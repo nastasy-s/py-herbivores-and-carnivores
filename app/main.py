@@ -1,5 +1,20 @@
+from __future__ import annotations
+
+
+class AnimalList(list["Animal"]):
+    def __repr__(self) -> str:
+        items = []
+        for animal in self:
+            items.append(
+                f"{{Name: {animal.name}, "
+                f"Health: {animal.health}, "
+                f"Hidden: {animal.hidden}}}"
+            )
+        return "[" + ", ".join(items) + "]"
+
+
 class Animal:
-    alive = []
+    alive: AnimalList = AnimalList()
 
     def __init__(self, name: str, health: int = 100) -> None:
         self.name = name
@@ -26,9 +41,12 @@ class Herbivore(Animal):
 
 
 class Carnivore(Animal):
-    def bite(self, other: Animal) -> None:
-        if isinstance(other, Herbivore) and not other.hidden:
-            other.health -= 50
-            if other.health <= 0:
-                other.health = 0
-                Animal.remove_dead(other)
+    def bite(
+        self,
+        target: "Herbivore",
+    ) -> None:
+        if isinstance(target, Herbivore) and not target.hidden:
+            target.health -= 50
+            if target.health <= 0:
+                target.health = 0
+                Animal.remove_dead(target)
